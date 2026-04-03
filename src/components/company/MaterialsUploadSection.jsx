@@ -95,7 +95,7 @@ export default function MaterialsUploadSection({ form, setForm }) {
               onValueChange={(val) => updateMaterialType(mat.id, val)}
             >
               <SelectTrigger
-                className={`w-full sm:w-64 h-14 min-h-[56px] flex items-center px-4 text-base md:text-base border border-gray-300 rounded-lg hover:border-iwePrimary focus:ring-1 focus:ring-iwePrimary transition-all bg-white shadow-sm ${
+                className={`w-full sm:w-64 h-14 min-h-14 flex items-center px-4 text-base md:text-base border border-gray-300 rounded-lg hover:border-iwePrimary focus:ring-1 focus:ring-iwePrimary transition-all bg-white shadow-sm ${
                   mat.type ? "text-gray-900 font-medium" : "text-gray-500"
                 }`}
               >
@@ -115,7 +115,7 @@ export default function MaterialsUploadSection({ form, setForm }) {
               </SelectContent>
             </Select>
 
-            <div className="relative flex border border-gray-300 hover:border-iwePrimary rounded-lg overflow-hidden h-14 min-h-[56px] flex-1 shadow-sm transition-colors group cursor-pointer bg-white w-full">
+            <div className="relative flex border border-gray-300 hover:border-iwePrimary rounded-lg overflow-hidden h-14 min-h-14 flex-1 shadow-sm transition-colors group cursor-pointer bg-white w-full">
               <input
                 type="file"
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
