@@ -10,12 +10,15 @@ import { RefreshCw } from "lucide-react";
 import AuthLayout from "../components/layout/AuthLayout";
 import { Button } from "@/components/ui/button";
 
-import ConfirmCompanyModal from "../components/company/ConfirmCompanyModal";
+import ConfirmCompanyModal from "../components/modals/ConfirmCompanyModal";
 import BasicInfoSection from "../components/company/BasicInfoSection";
 import ClassificationSection from "../components/company/ClassificationSection";
 import ProgramsSection from "../components/company/ProgramsSection";
 import MaterialsUploadSection from "../components/company/MaterialsUploadSection";
 import SocialMediaSection from "../components/company/SocialMediaSection";
+
+import NewVerticalModal from "@/components/modals/NewVerticalModal"; //for testing modal
+import NewLabelModal from "@/components/modals/NewLabelModal"; //for testing modal
 
 export default function CompanyInfo() {
   const dispatch = useDispatch();
@@ -58,6 +61,9 @@ export default function CompanyInfo() {
   // 5. New state to track if SAM Data was clicked
   const [isSamDataLocked, setIsSamDataLocked] = useState(false);
 
+  const [openModal, setOpenModal] = useState(false); //for testing modal
+  const [openLabelModal, setOpenLabelModal] = useState(false); //for testing modal
+
   const handleRefreshSamData = () => {
     setForm((prev) => ({
       ...prev,
@@ -86,10 +92,14 @@ export default function CompanyInfo() {
 
   const handleInitialSubmit = (e) => {
     e.preventDefault();
-    const hasInvalidMaterials = form.materials.some(mat => !mat.type || !mat.fileName);
-    
+    const hasInvalidMaterials = form.materials.some(
+      (mat) => !mat.type || !mat.fileName,
+    );
+
     if (hasInvalidMaterials) {
-      alert("Please ensure all your Material Upload rows have a Document Type selected and a file attached.");
+      alert(
+        "Please ensure all your Material Upload rows have a Document Type selected and a file attached.",
+      );
       return;
     }
     setShowConfirmModal(true);
@@ -166,6 +176,25 @@ export default function CompanyInfo() {
             </Button>
           </div>
         </form>
+        <button onClick={() => setOpenModal(true)}>Add Vertical</button>
+        <NewVerticalModal
+          isOpen={openModal}
+          onClose={() => setOpenModal(false)}
+          onSubmit={(data) => {
+            console.log(data); // Check the data received from the modal);
+            setOpenModal(false);
+          }}
+        />
+
+        <button onClick={() => setOpenLabelModal(true)}>Add Label</button>
+        <NewLabelModal
+          isOpen={openLabelModal}
+          onClose={() => setOpenLabelModal(false)}
+          onSubmit={(data) => {
+            console.log(data); // Check the data received from the modal);
+            setOpenLabelModal(false);
+          }}
+        />
       </div>
     </AuthLayout>
   );
