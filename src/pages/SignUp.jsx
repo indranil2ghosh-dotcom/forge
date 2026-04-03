@@ -82,7 +82,7 @@ export default function SignUp() {
     {
       id: "phone",
       label: "Phone Number (10 digits)",
-      type: "tel",
+      type: "number",
       required: true,
     },
     { id: "password", label: "Password", type: "password", required: true },
