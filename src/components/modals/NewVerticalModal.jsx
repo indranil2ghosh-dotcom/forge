@@ -1,5 +1,13 @@
 import React, { useState } from "react";
 import { X } from "lucide-react";
+import { z } from "zod";
+
+//  Zod Schema
+const verticalSchema = z.object({
+  verticalId: z.string().min(1, "Vertical ID is required"),
+  verticalName: z.string().min(1, "Vertical Name is required"),
+  description: z.string().optional(),
+});
 
 export default function VerticalModal({ isOpen, onClose, onSubmit }) {
 
@@ -9,6 +17,8 @@ export default function VerticalModal({ isOpen, onClose, onSubmit }) {
     description: "",
   });
 
+  const [errors, setErrors] = useState({});
+
   if (!isOpen) return null;
 
   const handleChange = (e) => {
@@ -16,27 +26,37 @@ export default function VerticalModal({ isOpen, onClose, onSubmit }) {
       ...prev,
       [e.target.name]: e.target.value,
     }));
+
+    // clear error while typing
+    setErrors(prev => ({
+      ...prev,
+      [e.target.name]: "",
+    }));
   };
 
   const handleSubmit = () => {
-    if (!form.verticalId.trim()) {
-      alert("Vertical ID is required");
-      return;
-    }
+    const result = verticalSchema.safeParse(form);
 
-    if (!form.verticalName.trim()) {
-      alert("Vertical Name is required");
+    if (!result.success) {
+      const fieldErrors = {};
+      result.error.errors.forEach(err => {
+        fieldErrors[err.path[0]] = err.message;
+      });
+
+      setErrors(fieldErrors);
       return;
     }
 
     onSubmit(form);
 
+    // reset
     setForm({
       verticalId: "",
       verticalName: "",
       description: "",
     });
 
+    setErrors({});
     onClose();
   };
 
@@ -72,8 +92,17 @@ export default function VerticalModal({ isOpen, onClose, onSubmit }) {
               value={form.verticalId}
               onChange={handleChange}
               placeholder="e.g., V001"
-              className="w-full mt-2 h-12 px-4 rounded-md bg-[#0F172A] border border-gray-700 text-sm placeholder-gray-500 focus:ring-2 focus:ring-iwePrimary outline-none"
+              className={`w-full mt-2 h-12 px-4 rounded-md bg-[#0F172A] text-sm placeholder-gray-500 outline-none focus:ring-2 ${
+                errors.verticalId
+                  ? "border-red-500 focus:ring-red-500"
+                  : "border-gray-700 focus:ring-iwePrimary"
+              }`}
             />
+            {errors.verticalId && (
+              <p className="text-red-500 text-xs mt-1">
+                {errors.verticalId}
+              </p>
+            )}
           </div>
 
           {/* Vertical Name */}
@@ -86,8 +115,17 @@ export default function VerticalModal({ isOpen, onClose, onSubmit }) {
               value={form.verticalName}
               onChange={handleChange}
               placeholder="e.g., Finance"
-              className="w-full mt-2 h-12 px-4 rounded-md bg-[#0F172A] border border-iwePrimary text-sm placeholder-gray-500 focus:ring-2 focus:ring-iwePrimary outline-none"
+              className={`w-full mt-2 h-12 px-4 rounded-md bg-[#0F172A] text-sm placeholder-gray-500 outline-none focus:ring-2 ${
+                errors.verticalName
+                  ? "border-red-500 focus:ring-red-500"
+                  : "border-iwePrimary focus:ring-iwePrimary"
+              }`}
             />
+            {errors.verticalName && (
+              <p className="text-red-500 text-xs mt-1">
+                {errors.verticalName}
+              </p>
+            )}
           </div>
 
           {/* Description */}

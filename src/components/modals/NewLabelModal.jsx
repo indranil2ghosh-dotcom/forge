@@ -1,5 +1,12 @@
 import React, { useState } from "react";
 import { X } from "lucide-react";
+import { z } from "zod";
+
+//  Zod Schema
+const labelSchema = z.object({
+  labelName: z.string().min(1, "Label name is required"),
+  description: z.string().optional(),
+});
 
 export default function LabelModal({ isOpen, onClose, onSubmit }) {
 
@@ -8,6 +15,8 @@ export default function LabelModal({ isOpen, onClose, onSubmit }) {
     description: "",
   });
 
+  const [errors, setErrors] = useState({});
+
   if (!isOpen) return null;
 
   const handleChange = (e) => {
@@ -15,11 +24,24 @@ export default function LabelModal({ isOpen, onClose, onSubmit }) {
       ...prev,
       [e.target.name]: e.target.value,
     }));
+
+    // clear error on typing
+    setErrors(prev => ({
+      ...prev,
+      [e.target.name]: "",
+    }));
   };
 
   const handleSubmit = () => {
-    if (!form.labelName.trim()) {
-      alert("Label name is required");
+    const result = labelSchema.safeParse(form);
+
+    if (!result.success) {
+      const fieldErrors = {};
+      result.error.errors.forEach(err => {
+        fieldErrors[err.path[0]] = err.message;
+      });
+
+      setErrors(fieldErrors);
       return;
     }
 
@@ -31,6 +53,7 @@ export default function LabelModal({ isOpen, onClose, onSubmit }) {
       description: "",
     });
 
+    setErrors({});
     onClose();
   };
 
@@ -66,8 +89,19 @@ export default function LabelModal({ isOpen, onClose, onSubmit }) {
               value={form.labelName}
               onChange={handleChange}
               placeholder="e.g., High Priority"
-              className="w-full mt-2 h-12 px-4 rounded-md bg-[#0F172A] border border-iwePrimary text-sm placeholder-gray-500 focus:ring-2 focus:ring-iwePrimary outline-none"
+              className={`w-full mt-2 h-12 px-4 rounded-md bg-[#0F172A] text-sm placeholder-gray-500 outline-none focus:ring-2 ${
+                errors.labelName
+                  ? "border-red-500 focus:ring-red-500"
+                  : "border-iwePrimary focus:ring-iwePrimary"
+              }`}
             />
+
+            {/* Error */}
+            {errors.labelName && (
+              <p className="text-red-500 text-xs mt-1">
+                {errors.labelName}
+              </p>
+            )}
           </div>
 
           {/* Description */}

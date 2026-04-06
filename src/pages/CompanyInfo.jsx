@@ -9,6 +9,7 @@ import {
 import { RefreshCw } from "lucide-react";
 import AuthLayout from "../components/layout/AuthLayout";
 import { Button } from "@/components/ui/button";
+import { activityLogs } from "../data/demoData"; // Import the demo activity logs
 
 import ConfirmCompanyModal from "../components/modals/ConfirmCompanyModal";
 import BasicInfoSection from "../components/company/BasicInfoSection";
@@ -19,6 +20,7 @@ import SocialMediaSection from "../components/company/SocialMediaSection";
 
 import NewVerticalModal from "@/components/modals/NewVerticalModal"; //for testing modal
 import NewLabelModal from "@/components/modals/NewLabelModal"; //for testing modal
+import ActivityCard from "@/components/ui/ActivityCard"; // Import the new ActivityCard component
 
 export default function CompanyInfo() {
   const dispatch = useDispatch();
@@ -63,6 +65,7 @@ export default function CompanyInfo() {
 
   const [openModal, setOpenModal] = useState(false); //for testing modal
   const [openLabelModal, setOpenLabelModal] = useState(false); //for testing modal
+  const [showActivity, setShowActivity] = useState(false); // New state to toggle activity log visibility
 
   const handleRefreshSamData = () => {
     setForm((prev) => ({
@@ -195,6 +198,22 @@ export default function CompanyInfo() {
             setOpenLabelModal(false);
           }}
         />
+
+        <button
+          type="button"
+          onClick={() => setShowActivity((prev) => !prev)}
+          className="mt-6 px-6 py-2 bg-iwePrimary hover:bg-iwePrimaryHover text-white rounded-md"
+        >
+          {showActivity ? "Hide Activity Log" : "Show Activity Log"}
+        </button>
+        {showActivity && (
+          <div className="mt-4 space-y-4">
+            {/* Example usage of ActivityCard with dummy data */}
+            {activityLogs.map((log) => (
+              <ActivityCard key={log.id} log={log} />
+            ))}
+          </div>
+        )}
       </div>
     </AuthLayout>
   );
